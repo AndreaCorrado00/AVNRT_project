@@ -1,0 +1,35 @@
+function main_ambient=set_main_parameters(main_path,dataset_number)
+main_ambient=struct();
+
+%% Adding (or creating) paths to folders
+folders_names=["\Data","\Documentation","\Figure"];
+main_ambient.Folders=[];
+
+for i=1:length(folders_names)
+    folder_path = main_path+folders_names(i);
+    if ~isfolder(folder_path)
+        mkdir(folder_path);
+    end
+    addpath(folder_path);
+
+    if folders_names(i)=="\Data"
+        data_sub_names=["\Original","\Processed"];
+        % Adding (or creating) paths to folders
+        for j=1:length(data_sub_names)
+            data_sub_path = main_path+"\Data"+data_sub_names(j);
+            if ~isfolder(data_sub_path)
+                mkdir(data_sub_path);
+            end
+            addpath(data_sub_path);
+            main_ambient.Folders=[main_ambient.Folders;data_sub_path];
+        end
+        
+    end
+    main_ambient.Folders=[main_ambient.Folders;folder_path];
+end
+fprintf(" - Folders have been added to the main path ...\n")
+
+%% Requesting the dataset
+dataset_number=input("      Decleare which dataset you'll use (1->3): ","s");
+main_ambient.dataset="dataset_"+dataset_number;
+fprintf(" - Saved the dataset number ...\n")
