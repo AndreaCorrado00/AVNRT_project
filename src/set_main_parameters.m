@@ -1,4 +1,4 @@
-function main_ambient=set_main_parameters(main_path,dataset_number)
+function main_ambient=set_main_parameters(main_path)
 main_ambient=struct();
 
 %% Adding (or creating) paths to folders
