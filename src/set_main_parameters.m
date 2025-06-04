@@ -11,7 +11,7 @@ for i=1:length(folders_names)
         mkdir(folder_path);
     end
     addpath(folder_path);
-    
+
     main_ambient.Folders=[main_ambient.Folders;[folders_names(i),folder_path]];
 
     if folders_names(i)=="\Data"
@@ -24,10 +24,8 @@ for i=1:length(folders_names)
             end
             addpath(data_sub_path);
             main_ambient.Folders=[main_ambient.Folders;[data_sub_names(j),data_sub_path]];
-        end
-        
-    end
-    
+        end   
+    end   
 end
 fprintf("\n - Folders have been added to the main path ...\n")
 
