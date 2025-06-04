@@ -27,6 +27,7 @@ main_ambient = set_main_parameters(main_path);
 
 %% Loading trace and feature extraction
 clc;
+
 % loop:
     % get trace
     % get features

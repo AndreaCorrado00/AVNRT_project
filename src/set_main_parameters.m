@@ -59,6 +59,7 @@ for i=1:length(folders_names)
         end   
     end   
 end
+main_ambient.Folders=[["\main",main_ambient.Folders];main_ambient.Folders];
 fprintf("\n - Folders have been added to the main path ...\n")
 
 %% Requesting the dataset
