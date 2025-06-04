@@ -11,6 +11,8 @@ for i=1:length(folders_names)
         mkdir(folder_path);
     end
     addpath(folder_path);
+    
+    main_ambient.Folders=[main_ambient.Folders;[folders_names(i),folder_path]];
 
     if folders_names(i)=="\Data"
         data_sub_names=["\Original","\Processed"];
@@ -21,11 +23,11 @@ for i=1:length(folders_names)
                 mkdir(data_sub_path);
             end
             addpath(data_sub_path);
-            main_ambient.Folders=[main_ambient.Folders;data_sub_path];
+            main_ambient.Folders=[main_ambient.Folders;[data_sub_names(j),data_sub_path]];
         end
         
     end
-    main_ambient.Folders=[main_ambient.Folders;folder_path];
+    
 end
 fprintf("\n - Folders have been added to the main path ...\n")
 
@@ -35,17 +37,17 @@ main_ambient.dataset="dataset_"+dataset_number;
 fprintf(" - Saved the dataset number ...\n")
 
 %% Declaring the output path
-use_default=input("\n     Would you like to use the defoult output path? (Y/N): ","s");
+use_default=input("\n     Would you like to use the default output path? (Y/N): ","s");
 if use_default=="Y"
     main_ambient.outputPath=main_path+"\Data\Processed";
-    disp(" - Output will be available into: "+main_path+"\Data\Processed\n");
+    disp(" - Output will be available into: "+main_path+"\Data\Processed");
 elseif use_default=="N"
     out_path=input("     Specify the FULL path for the output: ","s");
     main_ambient.outputPath=out_path;
     disp(" - Output will be available into: "+out_path);
 else
-    fprintf("       Error: Not a valid option, defoult will be used.\n")
+    fprintf("       Error: Not a valid option, default will be used.\n")
     main_ambient.outputPath=main_path+"\Data\Processed";
-    disp(" - Output will be available into: "+main_path+"\Data\Processed\n");
+    disp(" - Output will be available into: "+main_path+"\Data\Processed");
 end
-fprintf(" - Saved the output path ...\n")
+fprintf("\n - Saved the output path ...\n")
