@@ -1,11 +1,11 @@
-function time_th=get_time_thresholds(example_env,main_ambient)
+function time_th=get_time_thresholds(rov_signal,signal_env,main_ambient)
 
 
 % Smoothing the envelope
-example_env = movmean(example_env, main_ambient.feature_extraction_opt.envelope.SmoothPoints(1));  % Apply moving average filter
+signal_env = movmean(signal_env, main_ambient.feature_extraction_opt.envelope.SmoothPoints(1));  % Apply moving average filter
 
 % Computing the derivative of the envelope
-d_env = diff(example_env);
+d_env = diff(signal_env);
 d_env = [d_env; nan];  % Ensure same length as original
 d_env = movmean(d_env, main_ambient.feature_extraction_opt.envelope.SmoothPoints(2));  % Smoothing the derivative
 
@@ -147,7 +147,7 @@ stop = false;
 % Initialization
 N_start = N;                    % Initial number of active areas detected
 time_th_start = time_th;        % Initial time thresholds
-
+K=main_ambient.feature_extraction_opt.envelope.factor_K;
 while ~stop
     % Create mask to exclude active areas
     mask = true(size(rov_signal));
@@ -179,7 +179,7 @@ while ~stop
     % Check if all peaks are removed
     if N_start == 0
         % Show warning and reduce K
-        warning('All peaks have been removed! Reducing K from %.2f to %.2f.', K, K / 2);
+        % warning('All peaks have been removed! Reducing K from %.2f to %.2f.', K, K / 2);
         K = K / 2;
         % Reset to initial time thresholds to retry
         time_th_start = time_th;

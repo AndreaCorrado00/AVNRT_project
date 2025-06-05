@@ -16,7 +16,7 @@ method=main_ambient.feature_extraction_opt.envelope.evalutaion_method;
 
 trace_envelope=get_envelope(trace,N,method); 
 
-env_features_tab=get_envelope_features(trace_envelope); % to be defined 
+env_features_vector=get_envelope_features(trace,trace_envelope,main_ambient);
 
 %% Template matching features
 
@@ -27,4 +27,5 @@ env_features_tab=get_envelope_features(trace_envelope); % to be defined
 %% Saving features
 %   |trace points|features|class|
 
-trace_features=[env_features_tab,class];
+% trace_features=[env_features_vector,class];
+end
