@@ -35,7 +35,7 @@ main_ambient.feature_extraction_opt.envelope.evalutaion_method='rms';       % me
 main_ambient.feature_extraction_opt.envelope.SmoothPoints=[50,100];         % number of smooting points for the movmean [smoothing envelope, smoothing derivative]
 main_ambient.feature_extraction_opt.envelope.time_window=[0.17,0.6];        % time window of interest [start, end] in [ms]
 main_ambient.feature_extraction_opt.envelope.mult_factor=[0.002,50*0.002];  % factor to define the derivative thresholding [positive slope, negativ slope]
-main_ambient.feature_extraction_opt.envelope.factor_K=2.75;                 % factor to define the significance of a detected peak during time thrsholds cleaning (K*noise_std)
+main_ambient.feature_extraction_opt.envelope.factor_K=2.75;                 % factor to define the signa
 
 % loop:
     % get trace
