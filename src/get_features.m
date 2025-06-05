@@ -6,12 +6,21 @@ addpath(main_path+"\src\feature_extraction_src");
 
 %% Preparing trace
 class=trace(end);
-trace=trace(1:end-1);
+trace=str2double(trace(1:end-1));
+
+%% Preparing ambient
+new_main_ambient=main_ambient;
 
 %% Envelope based features 
-trace_envelope=get_envelope(trace); % to be defined 
+N=30;
+method='rms';
+
+trace_envelope=get_envelope(trace,N,method); % to be defined 
 env_features_tab=get_envelope_features(trace_envelope); % to be defined 
 
+% saving envelope options 
+new_main_ambient.feature_extraction_opt.envelope.N=N;
+new_main_ambient.feature_extraction_opt.envelope.method=method;
 
 %% Template matching features
 

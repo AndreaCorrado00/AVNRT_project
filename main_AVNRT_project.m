@@ -35,7 +35,7 @@ clc;
     % Implementare prima funzioni delle features, poi get features (con
     % parametri di default e personalizzabili sui parametri delle features)
 trace=get_trace(main_ambient,"A",1,1);
-
+features=get_features(trace,main_ambient);
 
 %% Feature visualization
 % Boxplots of features distribution

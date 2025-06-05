@@ -59,12 +59,14 @@ for i=1:length(folders_names)
         end   
     end   
 end
-main_ambient.Folders=[["\main",main_ambient.Folders];main_ambient.Folders];
+main_ambient.Folders=[["\main",main_path];main_ambient.Folders];
 fprintf("\n - Folders have been added to the main path ...\n")
 
 %% Requesting the dataset
 dataset_number=input("\n      Decleare which dataset you'll use (1->3): ","s");
 main_ambient.dataset="dataset_"+dataset_number;
+main_ambient.fc=2035; %Hz
+
 fprintf(" - Saved the dataset number ...\n")
 
 %% Declaring the output path
