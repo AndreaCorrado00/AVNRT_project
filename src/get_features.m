@@ -14,8 +14,7 @@ trace=str2double(trace(1:end-1));
 N=main_ambient.feature_extraction_opt.envelope.N_env_points;
 method=main_ambient.feature_extraction_opt.envelope.evalutaion_method;
 
-trace_envelope=get_envelope(trace,N,method); 
-
+[trace_envelope, ~] = envelope(trace, N,method);
 env_features_vector=get_envelope_features(trace,trace_envelope,main_ambient);
 
 %% Template matching features

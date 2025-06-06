@@ -1,6 +1,49 @@
 function time_th=get_time_thresholds(rov_signal,signal_env,main_ambient)
+% GET_TIME_THRESHOLDS  Extracts active time regions from a signal envelope using derivative-based thresholding.
+%
+%   time_th = GET_TIME_THRESHOLDS(rov_signal, signal_env, main_ambient)
+%
+%   This function performs time-domain segmentation of a signal based on the dynamics
+%   of its smoothed envelope. It identifies regions of interest (ROIs) where significant
+%   signal activity occurs, by detecting positive and negative slopes in the first derivative 
+%   of the envelope. A two-stage thresholding and correction mechanism ensures robustness 
+%   against noise and missing transitions.
+%
+%   The pipeline includes:
+%       - Smoothing of the envelope and its derivative
+%       - Derivative-based thresholding to detect rising/falling edges
+%       - Logical map construction and morphological correction
+%       - Extraction of onset/offset times of active signal phases
+%       - Iterative cleaning based on noise-adaptive amplitude thresholds
+%
+%   INPUTS:
+%       rov_signal     - Raw signal vector (e.g., audio, biosignal)
+%       signal_env     - Envelope of the signal (e.g., computed via Hilbert transform or rectification + low-pass)
+%       main_ambient   - Configuration struct containing:
+%                           .fc: sampling frequency
+%                           .feature_extraction_opt.envelope:
+%                               .SmoothPoints: [N_env, N_deriv] smoothing points
+%                               .time_window: [t_start, t_end] in seconds
+%                               .mult_factor: [upper, lower] threshold scaling
+%                               .factor_K: multiplier for amplitude-based noise gating
+%
+%   OUTPUT:
+%       time_th        - Nx2 matrix of time indices [start_idx, end_idx] corresponding 
+%                        to detected active segments
+%
+%   Notes:
+%   - The function is robust to missing or partially detected peaks by applying 
+%     morphological corrections to the binary activity maps.
+%   - Post-processing includes amplitude validation to discard low-SNR events 
+%     via a dynamic noise threshold.
+%
+%   Dependencies:
+%       - Requires helper function `find_runs` (defined below)
+%
+%   Author: Andrea Corrado
 
 
+%% ########### ENVELOPE TIME THRESHOLDS EXTRACTION PIPELINE ########### %%
 % Smoothing the envelope
 signal_env = movmean(signal_env, main_ambient.feature_extraction_opt.envelope.SmoothPoints(1));  % Apply moving average filter
 
@@ -20,7 +63,7 @@ d_env(signal_end:end) = nan;  % Removing later part of the signal
 % Removing mean from derivative to center the signal
 d_env = d_env - mean(d_env, "omitnan");
 
-%% Threshold definition
+%% DERIVATIVE THRESHOLDING
 % Define the upper and lower thresholds based on the maximum and minimum values of the derivative
 th_upper = abs(max(d_env, [], "omitnan"));
 th_upper = th_upper * main_ambient.feature_extraction_opt.envelope.mult_factor(1);  % Scale by multiplier factor
@@ -28,7 +71,7 @@ th_upper = th_upper * main_ambient.feature_extraction_opt.envelope.mult_factor(1
 th_lower = min(d_env, [], "omitnan");
 th_lower = th_lower * main_ambient.feature_extraction_opt.envelope.mult_factor(2);  % Scale lower threshold by a larger factor
 
-%% Map creation
+%% Map ealuation
 % Generate binary maps based on the thresholds
 map_upper = d_env > th_upper;  % Active regions with positive slope
 map_lower = d_env < th_lower;  % Active regions with negative slope
@@ -112,7 +155,7 @@ if isempty(last_lower) || (~isempty(last_upper) && last_upper > last_lower)
     map_upper(last_lower+1:end) = 0;
 end
 
-%% time thresholds building
+%% TIME THRESHOLDS DEFINITION
 time_th = [];
 
 % Find the consecutive runs of 1s in both maps
@@ -197,6 +240,7 @@ time_th = time_th_start;
 end
 
 
+%% ------------------------------------------------------------------------
 
 %% Helper function to find consecutive runs of 1s in a binary vector
 function runs = find_runs(binary_map)

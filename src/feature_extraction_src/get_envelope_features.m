@@ -1,7 +1,47 @@
 function envelope_feature_vector = get_envelope_features(example_env,example_rov,main_ambient)
 
+% Extracts a comprehensive set of time- and amplitude-based features from 
+% the envelope and roving signals of a single cardiac cycle.
+%
+% This function analyzes the input envelope (`example_env`) and roving 
+% (`example_rov`) signals by identifying active regions of interest based 
+% on dynamic thresholds, peak amplitudes, and temporal characteristics. 
+% It outputs a feature vector summarizing the shape and temporal dynamics 
+% of the cardiac signal envelope. The computed features are suitable for 
+% downstream classification, clustering, or signal comparison tasks.
+%
+% INPUTS:
+%   - example_env : [Nx1 double]  
+%       The envelope signal extracted from the original cardiac waveform.
+%
+%   - example_rov : [Nx1 double]  
+%       The roving signal corresponding to the same cardiac segment.
+%
+%   - main_ambient : [struct]  
+%       Structure containing the global parameters and configuration 
+%       for signal analysis. Required fields:
+%         • fc: Sampling frequency
+%         • feature_extraction_opt.envelope 
+%
+% OUTPUT:
+%   - envelope_feature_vector : [1xN string]  
+%       Row vector containing the extracted features, formatted as strings.
+%       The features include:
+%         • Number of active areas
+%         • Amplitude and timing of top 3 peaks (in order of magnitude and time)
+%         • Total duration and silent phase characteristics
+%         • Atrial and ventricular peak amplitude/time ratios
+%         • Relative number of activations over the duration
+%
+% DEPENDENCIES:
+%   - get_time_thresholds.m
+%   - find_atrial_ventricular_areas (nested within this file)
+%
+% AUTHOR: Andrea Corrado
 
-%% Time thresholds evaluation pipeline
+%% ############ ENVELOPE FEATURE EVALUATION PIPELINE ############ %%
+
+%% Extraction of time thresholds and fc
 fc=main_ambient.fc;
 time_th = get_time_thresholds(example_rov,example_env,main_ambient);
 
@@ -9,7 +49,7 @@ time_th = get_time_thresholds(example_rov,example_env,main_ambient);
 active_areas_number = size(time_th, 1);
 [N, ~] = size(time_th);
 
-%% Peaks of active areas evaluation
+% Peaks of active areas extraction
 original_env_peaks_val_pos = nan(max([3, N]), 2);
 original_rov_peaks_val_pos = nan(max([3, N]), 2);
 
@@ -21,7 +61,7 @@ for i = 1:min([N, 3])
     original_rov_peaks_val_pos(i, :) = [max_val, (max_pos + time_th(i, 1)) / fc];
 end
 
-%% First block of features: Peaks in order of magnitude
+%% FIRST BLOCK OF FEATURES: Peaks in order of magnitude
 % Sorting peaks in descending order of magnitude
 env_peaks_val_pos = sortrows(original_env_peaks_val_pos, 1, "descend","MissingPlacement","last");
 rov_peaks_val_pos = sortrows(original_rov_peaks_val_pos, 1, "descend","MissingPlacement","last");
@@ -50,7 +90,7 @@ Medium_peak_env_time = env_peaks_val_pos(2, 2);
 Lowest_peak_env = env_peaks_val_pos(3, 1);
 Lowest_peak_env_time = env_peaks_val_pos(3, 2);
 
-%% Second block of features: Peaks in order of time occurrence
+%% SECOND BLOCK OF FEATURES: Peaks in order of time occurrence
 % Sorting peaks by time of occurrence
 env_peaks_val_pos = sortrows(original_env_peaks_val_pos, 2, "ascend","MissingPlacement","last");
 rov_peaks_val_pos = sortrows(original_rov_peaks_val_pos, 2, "ascend","MissingPlacement","last");
@@ -79,7 +119,7 @@ Second__peak_env_time = env_peaks_val_pos(2, 2);
 Third_peak_env = env_peaks_val_pos(3, 1);
 Third_peak_env_time = env_peaks_val_pos(3, 2);
 
-%% Third block of features: Temporal activation features
+%% THIRD BLOCK OF FEATURES: Temporal activation features
 % Computing the signal duration
 duration = (time_th(end, end) - time_th(1, 1)) / fc;
 
@@ -92,7 +132,7 @@ silent_rateo = silent_phase / duration;
 % Computing the number of active areas relative to the duration
 n_active_areas_on_duration_ratio = active_areas_number / duration;
 
-%% Roving trace peaks: Atrial and ventricular phase evaluation
+%% FOURTH BLOCK OF FEATURES: atrial and ventricular peaks evaluation 
 % Using the start and end areas to detect the atrial and ventricular peaks
 [start_end_areas] = find_atrial_ventricular_areas(example_rov, example_env, main_ambient);
 
@@ -116,6 +156,7 @@ else
     third_second_ratio = nan;
 end
 
+%% BUILDING THE ENVELOPE FEATURE VECTOR
 envelope_feature_vector=[active_areas_number,...
     Major_peak, Major_peak_time, Medium_peak, Medium_peak_time, Lowest_peak, Lowest_peak_time,...
     Major_peak_env, Major_peak_env_time, Medium_peak_env, Medium_peak_env_time, Lowest_peak_env, Lowest_peak_env_time,...
@@ -130,6 +171,8 @@ envelope_feature_vector=string(envelope_feature_vector);
 
 end
 
+
+%% ------------------------------------------------------------------------
 
 %% Helper function
 function [start_end_areas] = find_atrial_ventricular_areas(signal, example_env, main_ambient)
