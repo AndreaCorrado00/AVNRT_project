@@ -1,4 +1,4 @@
-function corr_signal=get_cross_correlation_signal(signal, template, main_ambient)
+function corr_signal=get_correlation_signal(signal, template, main_ambient)
 
 %% Correlation signal options 
 smoothing_window=main_ambient.feature_extraction_opt.TemplateMatching.corr_signal_smoothing_window;

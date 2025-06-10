@@ -14,7 +14,7 @@ for i=1:N_template
     % template evaluation
     template=get_template(template_type,main_ambient);
     % cross correlation signal evaluation
-    corr_signal=get_cross_correlation_signal(signal, template, main_ambient);
+    corr_signal=get_correlation_signal(signal, template, main_ambient);
 
     %% Feature extraction
     % Defining the analysis window
