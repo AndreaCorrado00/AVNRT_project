@@ -37,6 +37,11 @@ main_ambient.feature_extraction_opt.envelope.time_window=[0.17,0.6];        % ti
 main_ambient.feature_extraction_opt.envelope.mult_factor=[0.002,50*0.002];  % factor to define the derivative thresholding [positive slope, negativ slope]
 main_ambient.feature_extraction_opt.envelope.factor_K=2.75;                 % factor to define the significance of a detected peak during time thrsholds cleaning (K*noise_std)
 
+% Template matching features
+main_ambient.feature_extraction_opt.TemplateMatching.template_names=["Simple","Complex"];
+main_ambient.feature_extraction_opt.TemplateMatching.template_duration=0.05;
+main_ambient.feature_extraction_opt.TemplateMatching.smoothing_window=5;
+
 % loop:
     % get trace
     % get features
