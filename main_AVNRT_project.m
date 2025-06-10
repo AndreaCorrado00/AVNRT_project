@@ -40,7 +40,8 @@ main_ambient.feature_extraction_opt.envelope.factor_K=2.75;                 % fa
 % Template matching features
 main_ambient.feature_extraction_opt.TemplateMatching.template_names=["Simple","Complex"];
 main_ambient.feature_extraction_opt.TemplateMatching.template_duration=0.05;
-main_ambient.feature_extraction_opt.TemplateMatching.smoothing_window=5;
+main_ambient.feature_extraction_opt.TemplateMatching.template_smoothing_window=5;
+main_ambient.feature_extraction_opt.TemplateMatching.corr_signal_smoothing_window=50;
 
 % loop:
     % get trace

@@ -2,7 +2,7 @@ function template=get_template(template_type,main_ambient)
 
 %% Template definition parameters extraction
 duration=main_ambient.feature_extraction_opt.TemplateMatching.template_duration;
-smoothing_window=main_ambient.feature_extraction_opt.TemplateMatching.smoothing_window;
+smoothing_window=main_ambient.feature_extraction_opt.TemplateMatching.template_smoothing_window;
 Fs=main_ambient.fc;
 
 %% Template definition
