@@ -1,5 +1,36 @@
 function template=get_template(template_type,main_ambient)
-
+% GET_TEMPLATE - Generates a predefined template waveform for correlation-based feature extraction.
+%
+% Syntax:
+%   template = get_template(template_type, main_ambient)
+%
+% Description:
+%   This function creates a time-domain template waveform based on the specified
+%   template type. The waveform is generated with a fixed duration and optionally
+%   smoothed using a Gaussian filter. It is intended for use in template matching
+%   algorithms for signal analysis.
+%
+%   Two types of templates are currently supported:
+%     - "Simple" : A symmetric biphasic waveform (positive-negative) with triangular shape
+%     - "Complex": A multiphasic waveform with three peaks (positive-negative-positive) 
+%                  and a return to baseline
+%
+% Inputs:
+%   template_type - A string specifying the desired template type ('Simple' or 'Complex')
+%   main_ambient  - A struct containing configuration parameters, including:
+%                   * .feature_extraction_opt.TemplateMatching.template_duration (in seconds)
+%                   * .feature_extraction_opt.TemplateMatching.template_smoothing_window
+%                   * .fc (sampling frequency in Hz)
+%
+% Outputs:
+%   template      - A 1D numeric vector representing the generated template signal
+%
+% Notes:
+%   - The waveform duration is quantized to the nearest number of samples.
+%   - A Gaussian smoothing is applied if the smoothing window is greater than zero.
+%   - The template is used in conjunction with cross-correlation in downstream analysis.
+%
+% Author: Andrea Corrado
 %% Template definition parameters extraction
 duration=main_ambient.feature_extraction_opt.TemplateMatching.template_duration;
 smoothing_window=main_ambient.feature_extraction_opt.TemplateMatching.template_smoothing_window;

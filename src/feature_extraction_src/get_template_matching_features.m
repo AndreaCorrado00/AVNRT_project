@@ -1,4 +1,38 @@
 function [template_matching_feature_vector,template_matching_features_names]=get_template_matching_features(signal, main_ambient)
+% GET_TEMPLATE_MATCHING_FEATURES - Extracts template-matching features from an input signal.
+%
+% Syntax:
+%   [features, feature_names] = get_template_matching_features(signal, main_ambient)
+%
+% Description:
+%   This function computes a set of template-matching features based on the
+%   cross-correlation between the input signal and predefined templates.
+%   For each template defined in main_ambient, it evaluates:
+%     - The peak of the cross-correlation signal within a specified time window
+%     - The time position of that peak
+%     - The energy of the cross-correlation signal
+%
+% Inputs:
+%   signal       - A vector representing the signal to be analyzed
+%   main_ambient - A struct containing configuration parameters, including:
+%                  * Sampling frequency (fc)
+%                  * Feature extraction options (template names and time window)
+%
+% Outputs:
+%   features       - A vector of extracted features, one triplet per template:
+%                    [cross_peak, cross_peak_time, cross_energy]
+%   feature_names  - A string array of feature names corresponding to each value in 'features'
+%
+% Notes:
+%   - The time window for peak extraction is defined in seconds and converted
+%     into indices using the sampling frequency.
+%   - NaN values in the correlation signal are handled via 'omitnan' and 'omitmissing' options.
+%   - The correlation energy is normalized by the valid signal length.
+%
+% Dependencies:
+%   GET_TEMPLATE, GET_CORRELATION_SIGNAL
+%
+% Author: Andrea Corrado
 
 %% Feature extraction options
 N_template=length(main_ambient.feature_extraction_opt.TemplateMatching.template_names);

@@ -33,6 +33,8 @@ function [envelope_feature_vector,features_names] = get_envelope_features(exampl
 %         • Atrial and ventricular peak amplitude/time ratios
 %         • Relative number of activations over the duration
 %
+%   feature_names  - A string array of feature names corresponding to each value in 'features'
+%
 % DEPENDENCIES:
 %   - get_time_thresholds.m
 %   - find_atrial_ventricular_areas (nested within this file)
