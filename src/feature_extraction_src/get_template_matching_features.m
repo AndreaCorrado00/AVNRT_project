@@ -1,4 +1,4 @@
-function template_matching_feature_vector=get_template_matching_features(signal, main_ambient)
+function [template_matching_feature_vector,template_matching_features_names]=get_template_matching_features(signal, main_ambient)
 
 %% Feature extraction options
 N_template=length(main_ambient.feature_extraction_opt.TemplateMatching.template_names);
@@ -7,6 +7,7 @@ fc=main_ambient.fc;
 %% Template matching evaluation
 % feature vector initialization
 template_matching_feature_vector=[];
+template_matching_features_names=[];
 
 for i=1:N_template
     % template type definition
@@ -30,6 +31,8 @@ for i=1:N_template
     corr_energy = sum(corr_signal.^2, 'omitnan') / M;
 
     template_matching_feature_vector=[template_matching_feature_vector,cross_peak,cross_peak_pos,corr_energy];
+
+    template_matching_features_names=[template_matching_features_names,"cross_peak_TM"+num2str(i),"cross_peak_time_TM"+num2str(i),"cross_energy_TM"+num2str(i)];
 
 end
 

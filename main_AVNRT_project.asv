@@ -53,8 +53,7 @@ main_ambient.feature_extraction_opt.TemplateMatching.corr_signal_smoothing_windo
 trace=get_trace(main_ambient,"A",1,1);
 [features,fetures_names]=get_features(trace,main_ambient);
 
-% nel loop inserire un if che tine il nome delle features solo quando sei
-% alla pima iterazione
+% nel loop inserire un if che tine il nome delle feature
 %% Feature visualization
 % Boxplots of features distribution
 % feature position and value for a signal received as input from the user
