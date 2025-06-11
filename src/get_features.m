@@ -1,4 +1,4 @@
-function trace_features=get_features(trace,main_ambient)
+function [trace_features,features_names]=get_features(trace,main_ambient)
 
 %% Adding path to feature extraction functions folder
 main_path=main_ambient.Folders(strcmp(main_ambient.Folders(:,1),"\main"),2);
@@ -15,7 +15,7 @@ N=main_ambient.feature_extraction_opt.envelope.N_env_points;
 method=main_ambient.feature_extraction_opt.envelope.evalutaion_method;
 
 [trace_envelope, ~] = envelope(trace, N,method);
-env_features_vector=get_envelope_features(trace,trace_envelope,main_ambient);
+[env_features_vector,env_fetures_names]=get_envelope_features(trace,trace_envelope,main_ambient);
 
 %% Template matching features
 template_matching_feature_vector=get_template_matching_features(trace, main_ambient);
@@ -27,7 +27,7 @@ template_matching_feature_vector=get_template_matching_features(trace, main_ambi
 %   |trace points|features|class|
 
 trace_features=[env_features_vector,template_matching_feature_vector,class];
-
+features_names=[env_fetures_names];
 % valutate le features andranno valutati i nome di esse. In quella fase
 % bisogna gesitire un numero variabile di template, creando dei nomi che si
 % adattano al numero degli stessi. 
