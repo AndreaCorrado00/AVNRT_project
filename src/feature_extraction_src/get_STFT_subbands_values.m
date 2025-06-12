@@ -1,4 +1,4 @@
-function sub_bands_feature_values=get_subbands_values(method, STFT, idx_sub_bands,STFT_peaks_positions)
+function sub_bands_feature_values=get_STFT_subbands_values(method, STFT, idx_sub_bands,STFT_peaks_positions)
 
 sub_bands_feature_values=zeros(3,3);
 switch method

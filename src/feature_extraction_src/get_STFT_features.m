@@ -37,7 +37,7 @@ STFT_peaks_positions=get_STFT_peaks(trace,time_th,fc,T);
 STFT_peaks_positions=sortrows(STFT_peaks_positions,1,"descend","MissingPlacement","last");
 
 % Feature 1.1: mean of regions
-avg_power_into_subbands=get_subbands_values("mean",STFT,idx_sub_bands,STFT_peaks_positions);
+avg_power_into_subbands=get_STFT_subbands_values("mean",STFT,idx_sub_bands,STFT_peaks_positions);
 % saving
 stft_features_vector=avg_power_into_subbands(:);
 features_names=["Dominant_AvgPowLF", "Dominant_AvgPowMF", "Dominant_AvgPowHF", ...
@@ -48,7 +48,7 @@ features_names=["Dominant_AvgPowLF", "Dominant_AvgPowMF", "Dominant_AvgPowHF", .
 STFT_peaks_positions=sortrows(STFT_peaks_positions,2,"ascend","MissingPlacement","last");
 
 % Feature 2.1: mean of regions
-avg_power_into_subbands=get_subbands_values("mean",STFT,idx_sub_bands,STFT_peaks_positions);
+avg_power_into_subbands=get_STFT_subbands_values("mean",STFT,idx_sub_bands,STFT_peaks_positions);
 % saving
 stft_features_vector= [stft_features_vector;avg_power_into_subbands(:)];
 features_names=[features_names,"First_AvgPowLF", "First_AvgPowMF", "First_AvgPowHF", ...
@@ -56,7 +56,7 @@ features_names=[features_names,"First_AvgPowLF", "First_AvgPowMF", "First_AvgPow
     "Third_AvgPowMF", "Third_AvgPowHF"];
 
 % Feature 2.2: max of regions
-max_power_into_subbands=get_subbands_values("max",STFT,idx_sub_bands,STFT_peaks_positions);
+max_power_into_subbands=get_STFT_subbands_values("max",STFT,idx_sub_bands,STFT_peaks_positions);
 % saving
 stft_features_vector= [stft_features_vector;max_power_into_subbands(:)];
 features_names=[features_names,"First_Active_Area_max_Power_HF","First_Active_Area_max_Power_MF","First_Active_Area_max_Power_LF", ...
@@ -64,7 +64,7 @@ features_names=[features_names,"First_Active_Area_max_Power_HF","First_Active_Ar
     "Third_Active_Area_max_Power_HF","Third_Active_Area_max_Power_MF","Third_Active_Area_max_Power_LF"];
 
 % Feature 2.3: min of regions
-min_power_into_subbands=get_subbands_values("min",STFT,idx_sub_bands,STFT_peaks_positions);
+min_power_into_subbands=get_STFT_subbands_values("min",STFT,idx_sub_bands,STFT_peaks_positions);
 % saving
 stft_features_vector= [stft_features_vector;min_power_into_subbands(:)];
 features_names=[features_names,"First_Active_Area_min_Power_HF","First_Active_Area_min_Power_MF","First_Active_Area_min_Power_LF", ...
@@ -72,7 +72,7 @@ features_names=[features_names,"First_Active_Area_min_Power_HF","First_Active_Ar
     "Third_Active_Area_min_Power_HF","Third_Active_Area_min_Power_MF","Third_Active_Area_min_Power_LF"];
 
 % Feature 2.4: std of regions
-std_power_into_subbands=get_subbands_values("std",STFT,idx_sub_bands,STFT_peaks_positions);
+std_power_into_subbands=get_STFT_subbands_values("std",STFT,idx_sub_bands,STFT_peaks_positions);
 % saving
 stft_features_vector= [stft_features_vector;std_power_into_subbands(:)];
 features_names=[features_names,"First_Active_Area_Power_std_HF","First_Active_Area_Power_std_MF","First_Active_Area_Power_std_LF", ...
