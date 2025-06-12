@@ -44,6 +44,15 @@ main_ambient.feature_extraction_opt.TemplateMatching.template_duration=0.05;    
 main_ambient.feature_extraction_opt.TemplateMatching.template_smoothing_window=5;           % Template smoothing window factor
 main_ambient.feature_extraction_opt.TemplateMatching.corr_signal_smoothing_window=50;       % Correlation signal smoothing window factor
 
+% STFT features
+main_ambient.feature_extraction_opt.STFT.win_length = 64;                                   % length of the window (points): Hamming window
+main_ambient.feature_extraction_opt.STFT.overlap_ratio= 3;                                  % 30% overlap between adjacent windows
+main_ambient.feature_extraction_opt.STFT.nfft = 1048;                                       % Number of FFT points for frequency resolution
+
+main_ambient.feature_extraction_opt.STFT.Low_band=[0,75]; %Hz
+main_ambient.feature_extraction_opt.STFT.Medium_band=[75,150]; %Hz
+main_ambient.feature_extraction_opt.STFT.High_band=[150,350]; % Hz
+
 % loop:
     % get trace
     % get features

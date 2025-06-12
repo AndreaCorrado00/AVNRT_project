@@ -44,6 +44,11 @@ main_ambient.feature_extraction_opt.TemplateMatching.template_duration=0.05;    
 main_ambient.feature_extraction_opt.TemplateMatching.template_smoothing_window=5;           % Template smoothing window factor
 main_ambient.feature_extraction_opt.TemplateMatching.corr_signal_smoothing_window=50;       % Correlation signal smoothing window factor
 
+% STFT features
+main_ambient.feature_extraction_opt.STFT.win_length = 64;                                   % length of the window (points)
+main_ambient.feature_extraction_opt.STFT.overlap= round(win_length / 3);                    % 30% overlap between adjacent windows
+main_ambient.feature_extraction_opt.STFT.window = hamming(win_length, 'periodic');          % Hamming window
+main_ambient.feature_extraction_opt.STFT.nfft = 1048; % Number of FFT points for frequency resolution
 % loop:
     % get trace
     % get features
@@ -53,7 +58,8 @@ main_ambient.feature_extraction_opt.TemplateMatching.corr_signal_smoothing_windo
 trace=get_trace(main_ambient,"A",1,1);
 [features,fetures_names]=get_features(trace,main_ambient);
 
-% nel loop inserire un if che tine il nome delle feature
+% nel loop inserire un if che tine il nome delle features solo quando sei
+% alla pima iterazione
 %% Feature visualization
 % Boxplots of features distribution
 % feature position and value for a signal received as input from the user
