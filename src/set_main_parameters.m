@@ -69,6 +69,18 @@ main_ambient.fc=2035; %Hz
 
 fprintf(" - Saved the dataset number ...\n")
 
+% Dataset properties extractoin 
+% path building
+dataset_path=main_ambient.Folders(strcmp(main_ambient.Folders(:,1),"\Processed"),2);
+% dataset extraction
+dataStruct=load(dataset_path+"\"+main_ambient.dataset);
+dataset=dataStruct.final_data_by_sub;
+
+maps=string(fieldnames(dataset));
+single_subjects=get_sub_idx(dataset);
+
+main_ambient.dataset_properties.map_names=maps;
+main_ambient.dataset_properties.single_subjects=single_subjects;
 %% Declaring the output path
 use_default=input("\n     Would you like to use the default output path? (Y/N): ","s");
 if use_default=="Y"
