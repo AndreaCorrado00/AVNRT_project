@@ -76,11 +76,10 @@ dataset_path=main_ambient.Folders(strcmp(main_ambient.Folders(:,1),"\Processed")
 dataStruct=load(dataset_path+"\"+main_ambient.dataset);
 dataset=dataStruct.final_data_by_sub;
 
-maps=string(fieldnames(dataset));
-single_subjects=get_sub_idx(dataset);
+dataset_overview=get_dataset_properties(dataset);
 
-main_ambient.dataset_properties.map_names=maps;
-main_ambient.dataset_properties.single_subjects=single_subjects;
+main_ambient.dataset_overview=dataset_overview;
+
 %% Declaring the output path
 use_default=input("\n     Would you like to use the default output path? (Y/N): ","s");
 if use_default=="Y"

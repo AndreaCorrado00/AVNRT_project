@@ -86,8 +86,6 @@ features_set.Properties.VariableNames=cellstr(["idx",features_names]);
 
 % cleaning
 clear("i","j","k","features_names","features","trace_unique_idx")
-
-
 %% Feature visualization
 % Boxplots of features distribution
 % feature position and value for a signal received as input from the user

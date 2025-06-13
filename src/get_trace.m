@@ -41,11 +41,11 @@ dataset=dataStruct.final_data_by_sub;
 
 %% trace extraction
 % |trace time points|class|
-map_type="MAP_"+map_type;
-sub=map_type+num2str(sub);
+% map_type="MAP_"+map_type;
+sub=string(map_type)+string(sub);
 class=get_class_name(map_type);
 
 %% output trace
-trace=[dataset.(map_type).(sub).rov_trace{:,trace_number};class];
+trace=[dataset.(string(map_type)).(sub).rov_trace{:,trace_number};class];
 
 
