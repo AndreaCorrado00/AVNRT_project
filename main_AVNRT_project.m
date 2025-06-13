@@ -53,12 +53,17 @@ main_ambient.feature_extraction_opt.STFT.Low_band=[0,75]; %Hz
 main_ambient.feature_extraction_opt.STFT.Medium_band=[75,150]; %Hz
 main_ambient.feature_extraction_opt.STFT.High_band=[150,350]; % Hz
 
+% Literature inspired features [Baldazzi et al., 2023]
+main_ambient.feature_extraction_opt.Literature.Frag_th=0.750;                               % Threshold (%) for fragmentation computation (fixed as it is in the article)
+
 % loop:
     % get trace
     % get features
 
     % Implementare prima funzioni delle features, poi get features (con
     % parametri di default e personalizzabili sui parametri delle features)
+% for map=["A","B","C"]
+%     for 
 trace=get_trace(main_ambient,"A",1,1);
 [features,fetures_names]=get_features(trace,main_ambient);
 

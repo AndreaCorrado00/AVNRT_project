@@ -24,12 +24,13 @@ method=main_ambient.feature_extraction_opt.envelope.evalutaion_method;
 [stft_features_vector, features_names]=get_STFT_features(trace,trace_envelope,main_ambient);
 
 %% Literature based features
+[literature_feature_vector,literature_feature_names]=get_literature_inspired_features(trace, main_ambient);
 
 %% Saving features
 %   |trace points|features|class|
 
-trace_features=[env_features_vector,template_matching_feature_vector,stft_features_vector,class];
-features_names=[env_fetures_names,template_matching_features_names,features_names,"class"];
+trace_features=[env_features_vector,template_matching_feature_vector,stft_features_vector,literature_feature_vector,class];
+features_names=[env_fetures_names,template_matching_features_names,features_names,literature_feature_names,"class"];
 % valutate le features andranno valutati i nome di esse. In quella fase
 % bisogna gesitire un numero variabile di template, creando dei nomi che si
 % adattano al numero degli stessi. 
