@@ -57,7 +57,7 @@ main_ambient.feature_extraction_opt.STFT.High_band=[150,350]; % Hz
 main_ambient.feature_extraction_opt.Literature.Frag_th=0.750;                               % Threshold (%) for fragmentation computation (fixed as it is in the article)
 
 
-% FEATURE EXTRACTION
+% ------------ FEATURE EXTRACTION ------------
 % Initialization
 trace_unique_idx=1;
 features_set=[];
