@@ -1,4 +1,51 @@
 function STFT_peaks_positions=get_STFT_peaks(trace,time_th,fc,STFT_time)
+%GET_STFT_PEAKS Identify peak values and their positions within time-defined segments of a signal,
+%              and associate them with time-frequency analysis windows.
+%
+%   STFT_peaks_positions = GET_STFT_PEAKS(trace, time_th, fc, STFT_time)
+%
+%   This function identifies the peak amplitude within user-defined time segments of
+%   a 1D signal and returns both temporal and spectral (STFT-based) information related
+%   to those peaks. It is typically used to associate peak activity in the time domain
+%   with corresponding indices in the time-frequency domain (e.g., for EMG or audio signals).
+%
+%   INPUTS:
+%       trace      : Vector
+%           Input signal (e.g., rectified EMG or audio waveform) from which peaks will be extracted.
+%
+%       time_th    : Nx2 matrix
+%           Matrix of time intervals (in sample indices) defining the regions of interest
+%           for peak detection. Each row is a [start_idx, end_idx] pair. Up to 3 intervals
+%           are processed; excess rows are ignored.
+%
+%       fc         : Scalar
+%           Sampling frequency of the input signal, in Hz. Used to convert indices to seconds.
+%
+%       STFT_time  : Vector
+%           Time vector corresponding to the STFT representation of the signal. Used to
+%           map the time-domain peaks to STFT window indices.
+%
+%   OUTPUT:
+%       STFT_peaks_positions : max(N,3)x8 matrix
+%           Each row contains:
+%               [1]  Peak value (absolute amplitude)
+%               [2]  Peak time (in seconds)
+%               [3]  Start of the time window (in seconds)
+%               [4]  End of the time window (in seconds)
+%               [5]  Index of the STFT frame closest to start time
+%               [6]  Index of the STFT frame closest to end time
+%               [7-8] Reserved (currently set to zero)
+%
+%   Notes:
+%       - Only the first three time windows are processed; the result matrix always has
+%         three rows (padded with NaNs if N < 3).
+%       - NaNs in the signal do not interfere with peak detection (they are omitted).
+%       - STFT time mapping is performed using nearest-neighbor matching to the provided STFT_time vector.
+%
+%   Example usage:
+%       peaks = get_STFT_peaks(my_trace, [1000 1500; 2000 2500], 1000, STFT_time_vector);
+%
+% Author: Andrea Corrado
 
 %% Areas of interest definition: time thresholds on STFT
 [N,~]=size(time_th);

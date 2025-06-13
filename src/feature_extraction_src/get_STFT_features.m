@@ -1,4 +1,47 @@
 function [stft_features_vector, features_names]=get_STFT_features(trace,trace_envelope,main_ambient)
+%--------------------------------------------------------------------------
+% Function: get_STFT_features
+%
+% Description:
+%   Extracts a comprehensive set of time-frequency features from an input
+%   signal using the Short-Time Fourier Transform (STFT). The function
+%   computes statistical descriptors (mean, max, min, std) across
+%   user-defined frequency sub-bands and regions of interest within the
+%   STFT matrix. These regions are defined based on the envelope of the
+%   signal and represent dominant or temporally localized activity.
+%
+% Inputs:
+%   - trace            : 1-D array containing the raw time-domain signal.
+%   - trace_envelope   : 1-D array representing the signal envelope, used
+%                        to guide peak detection in the STFT domain.
+%   - main_ambient     : Structure containing all required parameters:
+%                        * main_ambient.fc                         : Sampling frequency (Hz)
+%                        * main_ambient.feature_extraction_opt     : Struct with:
+%                             - STFT.win_length                    : STFT window length (samples)
+%                             - STFT.overlap_ratio                 : Ratio for window overlap
+%                             - STFT.nfft                          : FFT resolution
+%                             - STFT.Low_band / Medium_band / High_band : Frequency ranges [Hz]
+%
+% Outputs:
+%   - stft_features_vector : Row vector containing all extracted features.
+%   - features_names       : Cell array of feature name labels, in the same
+%                            order as their corresponding values in the vector.
+%
+% Methodology:
+%   1. Compute the STFT of the signal using a Hamming window.
+%   2. Define low, medium, and high frequency bands based on provided limits.
+%   3. Identify relevant time regions via envelope-based peak detection.
+%   4. Extract features across sub-bands for:
+%      - The most energetic peaks (magnitude-based sorting)
+%      - The earliest occurring peaks (time-based sorting)
+%   5. Features include statistical metrics: mean, max, min, std.
+%
+% Notes:
+%   - Missing or undefined regions return NaN values.
+%   - Frequency bands must not overlap.
+%   - Ensure input vectors are properly pre-processed (e.g., filtered, detrended).
+%
+% Author: Andrea Corrado
 
 %% Extraction of STFT feature extraction options
 fc=main_ambient.fc;
