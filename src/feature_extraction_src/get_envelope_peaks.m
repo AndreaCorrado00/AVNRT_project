@@ -31,9 +31,6 @@ function [original_env_peaks_val_pos,original_rov_peaks_val_pos]=get_envelope_pe
 %       - NaN is used to fill unused rows if N < 3.
 %       - All peak detections ignore NaNs within the signal segments.
 %
-%   Example usage:
-%       [env_peaks, rov_peaks] = get_envelope_peaks(my_rov, my_env, [100 300; 400 600], 1000);
-%
 % Author: Andrea Corrado
 
 %% Initialization

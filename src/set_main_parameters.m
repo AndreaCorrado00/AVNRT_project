@@ -75,9 +75,8 @@ dataset_path=main_ambient.Folders(strcmp(main_ambient.Folders(:,1),"\Processed")
 % dataset extraction
 dataStruct=load(dataset_path+"\"+main_ambient.dataset);
 dataset=dataStruct.final_data_by_sub;
-
+% Dataset overview (cardinality of traces by class and subjects) 
 dataset_overview=get_dataset_properties(dataset);
-
 main_ambient.dataset_overview=dataset_overview;
 
 %% Declaring the output path

@@ -28,9 +28,6 @@ function Fragmentation = get_Fragmentation(example_rov, th, fc)
 %   4. **Peak Detection**: The `findpeaks` function is used to detect peaks in the rectified signal that exceed the 
 %      calculated threshold, and the number of such peaks is counted.
 %
-% Example:
-%   Fragmentation = compute_fragmentation_value(example_rov, 1.5, 1000);
-%
 % Author: Andrea Corrado
 
 %% Rectifying the signal (taking absolute value)
