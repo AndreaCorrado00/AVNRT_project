@@ -60,34 +60,32 @@ main_ambient.feature_extraction_opt.Literature.Frag_th=0.750;                   
 % ------------ FEATURE EXTRACTION ------------
 % Initialization
 trace_unique_idx=1;
-features_set=[];
+features_set=table();
 
 % Extraction
 % for each map
     % for each subject
         % for each single rov trace
 
-for i=1:length(main_ambient.dataset_overview.Properties.RowNames)
-    for j=1:length(main_ambient.dataset_overview.Properties.VariableNames)
-        for k=1:main_ambient.dataset_overview{i,j}
+for i=1:1 %length(main_ambient.dataset_overview.Properties.RowNames)
+    for j=1:1% length(main_ambient.dataset_overview.Properties.VariableNames)
+        for k=1:2% main_ambient.dataset_overview{i,j}
             trace=get_trace(main_ambient,main_ambient.dataset_overview.Properties.RowNames(i),main_ambient.dataset_overview.Properties.VariableNames(j),k);
-            [features,features_names]=get_features(trace,main_ambient);
+            new_feature_row=get_features(trace,main_ambient);
 
             % saving feature vector
-            features_set=[features_set;[trace_unique_idx,features]];
+            features_set=[features_set;new_feature_row];
             trace_unique_idx=trace_unique_idx+1;
         end
     end
 end
 
-% saving table
-features_set=array2table(features_set);
-features_set.Properties.VariableNames=cellstr(["idx",features_names]);
 
 % cleaning
-clear("i","j","k","features_names","features","trace_unique_idx")
+clear("i","j","k","features","trace_unique_idx")
 
-
+% saving
+save_feature_set_in_json(features_set, main_ambient)
 %% Feature visualization
 % Boxplots of features distribution
 % feature position and value for a signal received as input from the user

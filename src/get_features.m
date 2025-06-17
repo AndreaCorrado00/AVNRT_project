@@ -1,4 +1,4 @@
-function [trace_features,features_names]=get_features(trace,main_ambient)
+function trace_features=get_features(trace,main_ambient)
 
 %% Adding path to feature extraction functions folder
 main_path=main_ambient.Folders(strcmp(main_ambient.Folders(:,1),"\main"),2);
@@ -21,17 +21,18 @@ method=main_ambient.feature_extraction_opt.envelope.evalutaion_method;
 [template_matching_feature_vector,template_matching_features_names]=get_template_matching_features(trace, main_ambient);
 
 %% STFT based features
-[stft_features_vector, features_names]=get_STFT_features(trace,trace_envelope,main_ambient);
+[stft_features_vector, stft_features_names]=get_STFT_features(trace,trace_envelope,main_ambient);
 
 %% Literature based features
 [literature_feature_vector,literature_feature_names]=get_literature_inspired_features(trace, main_ambient);
 
 %% Saving features
 %   |trace points|features|class|
+env_table = array2table(env_features_vector, 'VariableNames', cellstr(env_fetures_names));
+template_table = array2table(template_matching_feature_vector, 'VariableNames', cellstr(template_matching_features_names));
+stft_table = array2table(stft_features_vector, 'VariableNames', cellstr(stft_features_names));
+literature_table = array2table(literature_feature_vector, 'VariableNames', cellstr(literature_feature_names));
+%% OUTPUT
+trace_features = [table({trace}, 'VariableNames', {'trace'}), env_table, template_table, stft_table, literature_table, table(class)];
 
-trace_features=[env_features_vector,template_matching_feature_vector,stft_features_vector,literature_feature_vector,class];
-features_names=[env_fetures_names,template_matching_features_names,features_names,literature_feature_names,"class"];
-% valutate le features andranno valutati i nome di esse. In quella fase
-% bisogna gesitire un numero variabile di template, creando dei nomi che si
-% adattano al numero degli stessi. 
 end
