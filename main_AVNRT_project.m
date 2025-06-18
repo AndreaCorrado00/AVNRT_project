@@ -8,7 +8,7 @@ clc;
 
 main_path = "D:\Desktop\ANDREA\Universita\Progetti esterni\AVNRT_project\AVNRT_project"; % Add your path here
 src_path = main_path + "\src"; % Make sure that the src_path exists
-addpath(src_path)
+addpath(src_path,src_path+"\visualize_features_src")
 
 %% Parameter Settings
 clc;
