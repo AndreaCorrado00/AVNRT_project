@@ -61,6 +61,8 @@ main_ambient.feature_extraction_opt.Literature.Frag_th=0.750;                   
 % Initialization
 trace_unique_idx=1;
 features_set=table();
+% saving?
+save_features_set=false;
 
 % Extraction
 % for each map
@@ -80,12 +82,15 @@ for i=1:1 %length(main_ambient.dataset_overview.Properties.RowNames)
     end
 end
 
-
 % cleaning
 clear("i","j","k","features","trace_unique_idx")
 
 % saving
-save_feature_set_in_json(features_set, main_ambient)
+if save_features_set
+    save_feature_set_in_json(features_set, main_ambient)
+end
+
+
 %% Feature visualization
 % Boxplots of features distribution
 % feature position and value for a signal received as input from the user
