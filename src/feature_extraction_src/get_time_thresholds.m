@@ -71,7 +71,7 @@ th_upper = th_upper * main_ambient.feature_extraction_opt.envelope.mult_factor(1
 th_lower = min(d_env, [], "omitnan");
 th_lower = th_lower * main_ambient.feature_extraction_opt.envelope.mult_factor(2);  % Scale lower threshold by a larger factor
 
-%% Map ealuation
+%% Map evaluation
 % Generate binary maps based on the thresholds
 map_upper = d_env > th_upper;  % Active regions with positive slope
 map_lower = d_env < th_lower;  % Active regions with negative slope

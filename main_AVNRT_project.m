@@ -33,7 +33,7 @@ clc;
 main_ambient.feature_extraction_opt.envelope.N_env_points=30;               % number of points used to evaluate the envelope
 main_ambient.feature_extraction_opt.envelope.evalutaion_method='rms';       % method of evaluation
 main_ambient.feature_extraction_opt.envelope.SmoothPoints=[50,100];         % number of smooting points for the movmean [smoothing envelope, smoothing derivative]
-main_ambient.feature_extraction_opt.envelope.time_window=[0.17,0.6];        % time window of interest [start, end] in [s]
+main_ambient.feature_extraction_opt.envelope.time_window=[0.10,0.7];        % time window of interest [start, end] in [s]
 main_ambient.feature_extraction_opt.envelope.mult_factor=[0.002,50*0.002];  % factor to define the derivative thresholding [positive slope, negativ slope]
 main_ambient.feature_extraction_opt.envelope.factor_K=2.75;                 % factor to define the significance of a detected peak during time thrsholds cleaning (K*noise_std)
 
@@ -94,7 +94,7 @@ end
 %% Feature visualization
 % Boxplots of features distribution
 % feature position and value for a signal received as input from the user
+trace=get_trace(main_ambient,"MAP_A",1,1);
+new_feature_row=get_features(trace,main_ambient);
 
-
-
-
+visualise_trace_features(trace,new_feature_row,"PROVA",main_ambient)
