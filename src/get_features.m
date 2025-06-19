@@ -39,7 +39,7 @@ N=main_ambient.feature_extraction_opt.envelope.N_env_points;
 method=main_ambient.feature_extraction_opt.envelope.evalutaion_method;
 
 [trace_envelope, ~] = envelope(trace, N,method);
-[env_features_vector,env_fetures_names]=get_envelope_features(trace,trace_envelope,main_ambient);
+[env_features_vector,env_fetures_names]=get_envelope_features(trace_envelope,trace,main_ambient);
 
 %% Template matching features
 [template_matching_feature_vector,template_matching_features_names]=get_template_matching_features(trace, main_ambient);

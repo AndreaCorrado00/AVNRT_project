@@ -45,6 +45,8 @@ function time_th=get_time_thresholds(rov_signal,signal_env,main_ambient)
 
 %% ########### ENVELOPE TIME THRESHOLDS EXTRACTION PIPELINE ########### %%
 % Smoothing the envelope
+[map_upper_2, map_lower_2,d_env_2,th_lower_2,th_upper_2]=analise_envelope_slope(signal_env,main_ambient.feature_extraction_opt.envelope.mult_factor(1),main_ambient.fc);
+
 signal_env = movmean(signal_env, main_ambient.feature_extraction_opt.envelope.SmoothPoints(1));  % Apply moving average filter
 
 % Computing the derivative of the envelope
@@ -75,6 +77,8 @@ th_lower = th_lower * main_ambient.feature_extraction_opt.envelope.mult_factor(2
 % Generate binary maps based on the thresholds
 map_upper = d_env > th_upper;  % Active regions with positive slope
 map_lower = d_env < th_lower;  % Active regions with negative slope
+
+
 
 %% Map correction
 % Merge runs in the binary maps to ensure continuity
@@ -155,7 +159,12 @@ if isempty(last_lower) || (~isempty(last_upper) && last_upper > last_lower)
     map_upper(last_lower+1:end) = 0;
 end
 
+
+
+
+
 %% TIME THRESHOLDS DEFINITION
+
 time_th = [];
 
 % Find the consecutive runs of 1s in both maps
@@ -183,6 +192,7 @@ for i = 1:length(upper_runs)
 end
 
 %% Time thresholds iterative cleaning
+
 [N, ~] = size(time_th);
 
 % Iterative process to assess true peak presence
