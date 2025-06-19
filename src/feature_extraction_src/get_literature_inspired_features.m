@@ -39,7 +39,7 @@ th_frag=main_ambient.feature_extraction_opt.Literature.Frag_th;
 feature_vector=[];
 feature_names=[];
 %% Feature 1: App
-App=get_App(trace,fc);
+App=get_App(trace,main_ambient);
 feature_vector=[feature_vector,App];
 feature_names=[feature_names,"App"];
 

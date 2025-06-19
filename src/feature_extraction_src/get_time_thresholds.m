@@ -45,8 +45,6 @@ function time_th=get_time_thresholds(rov_signal,signal_env,main_ambient)
 
 %% ########### ENVELOPE TIME THRESHOLDS EXTRACTION PIPELINE ########### %%
 % Smoothing the envelope
-[map_upper_2, map_lower_2,d_env_2,th_lower_2,th_upper_2]=analise_envelope_slope(signal_env,main_ambient.feature_extraction_opt.envelope.mult_factor(1),main_ambient.fc);
-
 signal_env = movmean(signal_env, main_ambient.feature_extraction_opt.envelope.SmoothPoints(1));  % Apply moving average filter
 
 % Computing the derivative of the envelope

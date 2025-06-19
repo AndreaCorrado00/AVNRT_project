@@ -94,7 +94,7 @@ end
 %% Feature visualization
 % Boxplots of features distribution
 % feature position and value for a signal received as input from the user
-trace=get_trace(main_ambient,"MAP_A",1,1);
+trace=get_trace(main_ambient,"MAP_A",8,1);
 new_feature_row=get_features(trace,main_ambient);
 
 visualise_trace_features(trace,new_feature_row,"PROVA",main_ambient)
