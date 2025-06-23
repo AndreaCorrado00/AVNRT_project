@@ -1,4 +1,37 @@
 function visualise_trace_features(rov_trace,trace_features_table,main_title,main_ambient)
+% VISUALISE_TRACE_FEATURES
+%
+% This function visualizes multiple features extracted from a given ROV signal trace.
+% It generates a comprehensive 2x3 subplot figure that includes:
+%   1. Peaks by magnitude with classification (Dominant, Subdominant, Minor)
+%   2. Peaks by temporal occurrence (First, Second, Third)
+%   3. App feature annotation with a vertical arrow and value display
+%   4. Correlation peak and signal for Template Matching 1 (TM1)
+%   5. Correlation peak and signal for Template Matching 2 (TM2)
+%   6. Short-Time Fourier Transform (STFT) power spectrum visualization 
+%      segmented by predefined frequency bands and time sectors with 
+%      corresponding mean power annotations
+%
+% INPUTS:
+%   rov_trace            - vector containing the raw ROV signal trace; the last element
+%                          is the class label (removed internally before plotting)
+%   trace_features_table - table containing extracted features for the trace,
+%                          including peak values, peak times, App values, correlation peaks,
+%                          and STFT sector averages
+%   main_title           - string title for the entire figure
+%   main_ambient         - struct containing environment parameters and feature extraction options,
+%                          such as sampling frequency (fc), template matching options,
+%                          STFT parameters, and envelope settings
+%
+% NOTES:
+% - Peaks in the table are stored as absolute values; the function restores correct sign
+%   by referencing the original trace values at peak times.
+% - The function uses helper functions: get_correlation_signal, get_template, get_time_thresholds,
+%   and get_STFT_peaks, which must be available in the workspace.
+% - The STFT subplot visualizes power spectral density in dB/Hz and overlays frequency band boxes
+%   and corresponding mean power feature values for dominant, subdominant, and minor peaks.
+%
+% Author: Andrea Corrado
 
 %% Initialization
 fc=main_ambient.fc;
@@ -153,51 +186,97 @@ legend(["Corr signal", "Corr Peak"],"Location","northeast","FontSize",8)
 
 %% SP6: STFT mean by sector
 subplot(236)
+ax6 = gca;
 hold on
-% Generate spectrogram
-fc=main_ambient.fc;
+
+% Sampling frequency
+fc = main_ambient.fc;
+
+% STFT parameters
 win_length = main_ambient.feature_extraction_opt.STFT.win_length;
-overlap = round(win_length/main_ambient.feature_extraction_opt.STFT.overlap_ratio);
+overlap = round(win_length / main_ambient.feature_extraction_opt.STFT.overlap_ratio);
 window = hamming(win_length, 'periodic');
 nfft = main_ambient.feature_extraction_opt.STFT.nfft;
 
-% Spectrogram evaluation
+% STFT computation
 [~, F, T, STFT] = spectrogram(rov_trace, window, overlap, nfft, fc);
 
-% ---- STFT sub-matricces ----
-% Frequency sub-bands
-Low_band=main_ambient.feature_extraction_opt.STFT.Low_band;
-Medium_band=main_ambient.feature_extraction_opt.STFT.Medium_band; %Hz
-High_band=main_ambient.feature_extraction_opt.STFT.High_band; % Hz
-% Frequency vector subdivision
+% Frequency bands (Hz)
+Low_band = main_ambient.feature_extraction_opt.STFT.Low_band;
+Medium_band = main_ambient.feature_extraction_opt.STFT.Medium_band;
+High_band = main_ambient.feature_extraction_opt.STFT.High_band;
+
+% Indices for each band
 idx_Low_band = F >= Low_band(1) & F <= Low_band(2);
 idx_Medium_band = F > Medium_band(1) & F <= Medium_band(2);
 idx_High_band = F > High_band(1) & F <= High_band(2);
+idx_sub_bands = [idx_Low_band, idx_Medium_band, idx_High_band];
 
-idx_sub_bands=[idx_Low_band,idx_Medium_band,idx_High_band];
+% Time thresholds for sector segmentation
+[trace_envelope, ~] = envelope(rov_trace, main_ambient.feature_extraction_opt.envelope.N_env_points, main_ambient.feature_extraction_opt.envelope.evalutaion_method);
+time_th = get_time_thresholds(rov_trace, trace_envelope, main_ambient);
 
-% time thresholds
-[trace_envelope, ~] = envelope(rov_trace, main_ambient.feature_extraction_opt.envelope.N_env_points,main_ambient.feature_extraction_opt.envelope.evalutaion_method);
-time_th = get_time_thresholds(rov_trace,trace_envelope,main_ambient);
+% STFT peak positions (sorted by magnitude)
+STFT_peaks_positions = get_STFT_peaks(rov_trace, time_th, fc, T);
+STFT_peaks_positions = sortrows(STFT_peaks_positions, 1, "descend", "MissingPlacement", "last");
 
-% mean spectral power into sub matrices
-% peaks_names=["Dominant","cross_peak_time_TM1"];
-% peaks_values_pos=trace_features_table(:,peaks_names);
+% Feature names (must match table column names)
+avg_names = ["Dominant_AvgPowLF", "Dominant_AvgPowMF", "Dominant_AvgPowHF", ...
+             "Subdominant_AvgPowLF", "Subdominant_AvgPowMF", "Subdominant_AvgPowHF", ...
+             "Minor_AvgPowLF", "Minor_AvgPowMF", "Minor_AvgPowHF"];
 
-% visualisation 
-imagesc(T, F, 10 * log10(STFT));
-axis tight;
-set(gca, 'YDir', 'normal'); % Flip Y-axis to normal orientation
-xlabel('Time [s]',"FontSize",8);
-ylabel('Frequency [Hz]',"FontSize",8);
-ylim([0, 400]); % Limit frequency range to 0-400 Hz
-hColorbar = colorbar('southoutside'); % Add colorbar below plot
+% Extract feature values
+peaks_values_pos = trace_features_table(:, avg_names);
+
+% STFT visualization
+imagesc('XData', T, 'YData', F, 'CData', 10*log10(abs(STFT)), 'CDataMapping', 'scaled');
+axis xy;
+set(gca, 'YDir', 'normal');
+xlabel('Time [s]', "FontSize", 8);
+ylabel('Frequency [Hz]', "FontSize", 8);
+ylim([0, 400]);
+hColorbar = colorbar('southoutside');
 ylabel(hColorbar, 'Power/Frequency [dB/Hz]');
 
+% Draw boxes and label power values (scientific notation)
+for s = 1:height(time_th)
+    t_start = time_th(s, 1) / fc;
+    t_end = time_th(s, 2) / fc;
 
-% Link axes for synchronized zooming/panning
-linkaxes(findall(gcf, 'Type', 'axes'), 'x');
+    if isnan(t_start) || isnan(t_end)
+        continue;
+    end
 
-%
-title('STFT mean into sectors ')
+    for b = 1:3
+        switch b
+            case 1
+                f_start = Low_band(1); f_end = Low_band(2);
+            case 2
+                f_start = Medium_band(1); f_end = Medium_band(2);
+            case 3
+                f_start = High_band(1); f_end = High_band(2);
+        end
 
+        % Draw rectangle
+        rectangle('Position', [t_start, f_start, t_end - t_start, f_end - f_start], ...
+                  'EdgeColor', 'k', 'LineStyle', '--', 'LineWidth', 1);
+
+        % Retrieve feature value (using pre-defined column names)
+        idx = (s - 1) * 3 + b;
+        if idx <= width(peaks_values_pos)
+            value = peaks_values_pos{1, idx};
+            if ~ismissing(value) && ~isnan(value)
+                t_mid = (t_start + t_end) / 2;
+                f_mid = (f_start + f_end) / 2;
+                text(t_mid, f_mid, sprintf('%.1e', value), ...
+                     'HorizontalAlignment', 'center', ...
+                     'VerticalAlignment', 'middle', ...
+                     'FontSize', 7, 'FontWeight', 'bold', ...
+                     'Color', 'k', 'BackgroundColor', 'w', ...
+                     'Margin', 0.5);
+            end
+        end
+    end
+end
+
+title('STFT mean in time-frequency sectors')
