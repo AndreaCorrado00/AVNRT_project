@@ -5,7 +5,7 @@ fc=main_ambient.fc;
 t = [0:1/fc:1-1/fc]';
 class=rov_trace(end);
 rov_trace=double(rov_trace(1:end-1)); % class elimination
-%% Figure initialisation 
+%% Figure initialisation
 fig=figure(1);
 fig.WindowState = "maximized";
 sgtitle(main_title)
@@ -19,15 +19,15 @@ for i=1:2:size(peaks_values_pos,2)-1
         peaks_values_pos{:,i}="-"+peaks_values_pos{:,i};
     end
 end
-% plotting 
+% plotting
 subplot(231)
 hold on
 plot(t,rov_trace,"LineWidth",1.1,"Color","#0072BD","HandleVisibility","off")
 palette = [
-    0.60, 0.00, 0.10;   
-    1.00, 0.50, 0.00;  
-    1.00, 0.80, 0.00 
-];
+    0.60, 0.00, 0.10;
+    1.00, 0.50, 0.00;
+    1.00, 0.80, 0.00
+    ];
 for i=1:2:size(peaks_values_pos,2)-1
     color_idx = mod((i-1)/2, size(palette,1)) + 1;
     plot(double(peaks_values_pos{:,i+1}),double(peaks_values_pos{:,i}),"Color",palette(color_idx,:),"Marker","o","LineWidth",2)
@@ -47,15 +47,15 @@ for i=1:2:size(peaks_values_pos,2)-1
         peaks_values_pos{:,i}="-"+peaks_values_pos{:,i};
     end
 end
-% plotting 
+% plotting
 subplot(232)
 hold on
 plot(t,rov_trace,"LineWidth",1.1,"Color","#0072BD","HandleVisibility","off")
 palette = [
-   0.00, 0.45, 0.00;  
-    0.00, 0.70, 0.20;  
-    0.35, 0.90, 0.40 
-];
+    0.00, 0.45, 0.00;
+    0.00, 0.70, 0.20;
+    0.35, 0.90, 0.40
+    ];
 for i=1:2:size(peaks_values_pos,2)-1
     color_idx = mod((i-1)/2, size(palette,1)) + 1;
     plot(double(peaks_values_pos{:,i+1}),double(peaks_values_pos{:,i}),"Color",palette(color_idx,:),"Marker","o","LineWidth",2)
@@ -119,7 +119,7 @@ text(App_arrow_x_pos + 0.01 * range(t), (y_start + y_end)/2, ...
     'HorizontalAlignment', 'left', 'VerticalAlignment', 'middle');
 
 %% SP4: TM1 corr signal peak
-% correlation signal evaluation 
+% correlation signal evaluation
 tm1_corr_signal=get_correlation_signal(rov_trace, get_template(main_ambient.feature_extraction_opt.TemplateMatching.template_names(1),main_ambient),main_ambient);
 
 % peak position and value
@@ -135,7 +135,7 @@ plot(double(peaks_values_pos{:,2}),double(peaks_values_pos{:,1}),"Color",[0.60, 
 title('Correlation peak for tmp1')
 legend(["Corr signal", "Corr Peak"],"Location","northeast","FontSize",8)
 %% SP5: TM2 corr signal peak
-% correlation signal evaluation 
+% correlation signal evaluation
 tm2_corr_signal=get_correlation_signal(rov_trace, get_template(main_ambient.feature_extraction_opt.TemplateMatching.template_names(2),main_ambient),main_ambient);
 
 % peak position and value
@@ -154,5 +154,50 @@ legend(["Corr signal", "Corr Peak"],"Location","northeast","FontSize",8)
 %% SP6: STFT mean by sector
 subplot(236)
 hold on
+% Generate spectrogram
+fc=main_ambient.fc;
+win_length = main_ambient.feature_extraction_opt.STFT.win_length;
+overlap = round(win_length/main_ambient.feature_extraction_opt.STFT.overlap_ratio);
+window = hamming(win_length, 'periodic');
+nfft = main_ambient.feature_extraction_opt.STFT.nfft;
 
+% Spectrogram evaluation
+[~, F, T, STFT] = spectrogram(rov_trace, window, overlap, nfft, fc);
+
+% ---- STFT sub-matricces ----
+% Frequency sub-bands
+Low_band=main_ambient.feature_extraction_opt.STFT.Low_band;
+Medium_band=main_ambient.feature_extraction_opt.STFT.Medium_band; %Hz
+High_band=main_ambient.feature_extraction_opt.STFT.High_band; % Hz
+% Frequency vector subdivision
+idx_Low_band = F >= Low_band(1) & F <= Low_band(2);
+idx_Medium_band = F > Medium_band(1) & F <= Medium_band(2);
+idx_High_band = F > High_band(1) & F <= High_band(2);
+
+idx_sub_bands=[idx_Low_band,idx_Medium_band,idx_High_band];
+
+% time thresholds
+[trace_envelope, ~] = envelope(rov_trace, main_ambient.feature_extraction_opt.envelope.N_env_points,main_ambient.feature_extraction_opt.envelope.evalutaion_method);
+time_th = get_time_thresholds(rov_trace,trace_envelope,main_ambient);
+
+% mean spectral power into sub matrices
+% peaks_names=["Dominant","cross_peak_time_TM1"];
+% peaks_values_pos=trace_features_table(:,peaks_names);
+
+% visualisation 
+imagesc(T, F, 10 * log10(STFT));
+axis tight;
+set(gca, 'YDir', 'normal'); % Flip Y-axis to normal orientation
+xlabel('Time [s]',"FontSize",8);
+ylabel('Frequency [Hz]',"FontSize",8);
+ylim([0, 400]); % Limit frequency range to 0-400 Hz
+hColorbar = colorbar('southoutside'); % Add colorbar below plot
+ylabel(hColorbar, 'Power/Frequency [dB/Hz]');
+
+
+% Link axes for synchronized zooming/panning
+linkaxes(findall(gcf, 'Type', 'axes'), 'x');
+
+%
 title('STFT mean into sectors ')
+

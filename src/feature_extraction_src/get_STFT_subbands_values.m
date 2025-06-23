@@ -86,7 +86,5 @@ end
 
 % Replace zeros with NaN to handle missing data or uncalculated regions
 sub_bands_feature_values(sub_bands_feature_values==0)=nan;
-% Transposition for the following steps
-sub_bands_feature_values=sub_bands_feature_values';
 
 end
