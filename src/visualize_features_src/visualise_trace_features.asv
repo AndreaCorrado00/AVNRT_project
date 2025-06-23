@@ -68,19 +68,88 @@ xlabel("time [s]")
 legend(["First", "Second", "Third"],"Location","northeast","FontSize",8)
 
 %% SP3: App
-subplot(233)
+subplot(2,3,3)
 hold on
-App_value=double(trace_features_table{:,"App"});
-App_arrow_x_pos=double(trace_features_table{:,"Dominant_peak_time"})+0.05*double(trace_features_table{:,"Dominant_peak_time"});
-plot(t,rov_trace,"LineWidth",1.1,"Color","#0072BD","HandleVisibility","off");
 
+% Extract features
+App_value = double(trace_features_table{:,"App"});
+Dominant_peak_time = double(trace_features_table{:,"Dominant_peak_time"});
+
+% Plot signal
+plot(t, rov_trace, "LineWidth", 1.1, "Color", "#0072BD", "HandleVisibility", "off");
 title('App')
+
+% Set y-axis limits with margin
+y_min = min(rov_trace);
+y_max = max(rov_trace);
+y_margin = 0.05;
+
+ylim([y_min - abs(y_margin * y_min), y_max + y_margin * y_max]);
+
+% Force axes to update
+drawnow;
+
+% Define arrow x-position (slightly right of dominant peak)
+App_arrow_x_pos = Dominant_peak_time + 0.01 * range(t);
+
+% Define true start and end points of App (min to max)
+y_start = y_min;
+y_end = y_max;
+
+% Convert data coords to normalized figure units for annotation
+ax = gca;
+pos = ax.Position;
+x_lim = ax.XLim;
+y_lim = ax.YLim;
+
+x_norm = @(x) pos(1) + (x - x_lim(1)) / (x_lim(2) - x_lim(1)) * pos(3);
+y_norm = @(y) pos(2) + (y - y_lim(1)) / (y_lim(2) - y_lim(1)) * pos(4);
+
+x0 = x_norm(App_arrow_x_pos);
+y0 = y_norm(y_start);
+y1 = y_norm(y_end);
+
+% Add vertical double-headed arrow for App
+annotation('doublearrow', [x0 x0], [y0 y1], 'Color', 'r', 'LineWidth', 1.5);
+
+% Add text label (App value) next to arrow
+text(App_arrow_x_pos + 0.01 * range(t), (y_start + y_end)/2, ...
+    sprintf('%.3f', App_value), ...
+    'Color', 'r', 'FontWeight', 'bold', ...
+    'HorizontalAlignment', 'left', 'VerticalAlignment', 'middle');
+
 %% SP4: TM1 corr signal peak
+% correlation signal evaluation 
+tm1_corr_signal=get_correlation_signal(rov_trace, get_template(main_ambient.feature_extraction_opt.TemplateMatching.template_names(1),main_ambient),main_ambient);
+
+% peak position and value
+peaks_names=["cross_peak_TM1","cross_peak_time_TM1"];
+peaks_values_pos=trace_features_table(:,peaks_names);
+
 subplot(234)
 hold on
+plot(t,rov_trace,"LineWidth",1.1,"Color","#0072BD","HandleVisibility","off")
+plot(t,tm1_corr_signal,"LineWidth",1.5,"Color",[1,0.5,0])
+plot(double(peaks_values_pos{:,2}),double(peaks_values_pos{:,1}),"Color",[0.60, 0.00, 0.10],"Marker","o","LineWidth",2)
 
 title('Correlation peak for tmp1')
+legend(["Corr signal", "Corr Peak"],"Location","northeast","FontSize",8)
 %% SP5: TM2 corr signal peak
+% correlation signal evaluation 
+tm2_corr_signal=get_correlation_signal(rov_trace, get_template(main_ambient.feature_extraction_opt.TemplateMatching.template_names(1),main_ambient),main_ambient);
+
+% peak position and value
+peaks_names=["cross_peak_TM2","cross_peak_time_TM2"];
+peaks_values_pos=trace_features_table(:,peaks_names);
+
+subplot(234)
+hold on
+plot(t,rov_trace,"LineWidth",1.1,"Color","#0072BD","HandleVisibility","off")
+plot(t,tm2_corr_signal,"LineWidth",1.5,"Color",[1,0.5,0])
+plot(double(peaks_values_pos{:,2}),double(peaks_values_pos{:,1}),"Color",[0.60, 0.00, 0.10],"Marker","o","LineWidth",2)
+
+title('Correlation peak for tmp2')
+legend(["Corr signal", "Corr Peak"],"Location","northeast","FontSize",8)
 subplot(235)
 hold on
 

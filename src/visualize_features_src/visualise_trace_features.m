@@ -119,15 +119,38 @@ text(App_arrow_x_pos + 0.01 * range(t), (y_start + y_end)/2, ...
     'HorizontalAlignment', 'left', 'VerticalAlignment', 'middle');
 
 %% SP4: TM1 corr signal peak
+% correlation signal evaluation 
+tm1_corr_signal=get_correlation_signal(rov_trace, get_template(main_ambient.feature_extraction_opt.TemplateMatching.template_names(1),main_ambient),main_ambient);
+
+% peak position and value
+peaks_names=["cross_peak_TM1","cross_peak_time_TM1"];
+peaks_values_pos=trace_features_table(:,peaks_names);
+
 subplot(234)
 hold on
+plot(t,rov_trace,"LineWidth",1.1,"Color","#0072BD","HandleVisibility","off")
+plot(t,tm1_corr_signal,"LineWidth",1.5,"Color",[1,0.5,0])
+plot(double(peaks_values_pos{:,2}),double(peaks_values_pos{:,1}),"Color",[0.60, 0.00, 0.10],"Marker","o","LineWidth",2)
 
 title('Correlation peak for tmp1')
+legend(["Corr signal", "Corr Peak"],"Location","northeast","FontSize",8)
 %% SP5: TM2 corr signal peak
+% correlation signal evaluation 
+tm2_corr_signal=get_correlation_signal(rov_trace, get_template(main_ambient.feature_extraction_opt.TemplateMatching.template_names(2),main_ambient),main_ambient);
+
+% peak position and value
+peaks_names=["cross_peak_TM2","cross_peak_time_TM2"];
+peaks_values_pos=trace_features_table(:,peaks_names);
+
 subplot(235)
 hold on
+plot(t,rov_trace,"LineWidth",1.1,"Color","#0072BD","HandleVisibility","off")
+plot(t,tm2_corr_signal,"LineWidth",1.5,"Color",[1,0.5,0])
+plot(double(peaks_values_pos{:,2}),double(peaks_values_pos{:,1}),"Color",[0.60, 0.00, 0.10],"Marker","o","LineWidth",2)
 
 title('Correlation peak for tmp2')
+legend(["Corr signal", "Corr Peak"],"Location","northeast","FontSize",8)
+
 %% SP6: STFT mean by sector
 subplot(236)
 hold on

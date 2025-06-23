@@ -25,10 +25,7 @@ clc;
 % from the main path and the SRC path
 main_ambient = set_main_parameters(main_path);
 
-%% Loading trace and feature extraction
-clc;
-
-% --- OPTIONS OF EXTRACTION ---
+%%  --- OPTIONS OF EXTRACTION ---
 % Envelope features
 main_ambient.feature_extraction_opt.envelope.N_env_points=30;               % number of points used to evaluate the envelope
 main_ambient.feature_extraction_opt.envelope.evalutaion_method='rms';       % method of evaluation
@@ -57,7 +54,7 @@ main_ambient.feature_extraction_opt.STFT.High_band=[150,350]; % Hz
 main_ambient.feature_extraction_opt.Literature.Frag_th=0.750;                               % Threshold (%) for fragmentation computation (fixed as it is in the article)
 
 
-% ------------ FEATURE EXTRACTION ------------
+%% ------------ FEATURE EXTRACTION ------------
 % Initialization
 trace_unique_idx=1;
 features_set=table();
@@ -92,6 +89,7 @@ end
 
 
 %% Feature visualization
+
 % Boxplots of features distribution
 % feature position and value for a signal received as input from the user
 trace=get_trace(main_ambient,"MAP_A",8,1);
