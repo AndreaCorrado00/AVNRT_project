@@ -26,6 +26,7 @@ clc;
 main_ambient = set_main_parameters(main_path);
 
 %%  --- OPTIONS OF EXTRACTION ---
+clc;
 % Envelope features
 main_ambient.feature_extraction_opt.envelope.N_env_points=30;               % number of points used to evaluate the envelope
 main_ambient.feature_extraction_opt.envelope.evalutaion_method='rms';       % method of evaluation
@@ -66,8 +67,8 @@ save_features_set=false;
     % for each subject
         % for each single rov trace
 
-for i=1:1 %length(main_ambient.dataset_overview.Properties.RowNames)
-    for j=1:1% length(main_ambient.dataset_overview.Properties.VariableNames)
+for i=1:length(main_ambient.dataset_overview.Properties.RowNames)
+    for j=1:length(main_ambient.dataset_overview.Properties.VariableNames)
         for k=1:2% main_ambient.dataset_overview{i,j}
             trace=get_trace(main_ambient,main_ambient.dataset_overview.Properties.RowNames(i),main_ambient.dataset_overview.Properties.VariableNames(j),k);
             new_feature_row=get_features(trace,main_ambient);
@@ -88,11 +89,21 @@ if save_features_set
 end
 
 
-%% Feature visualization
-
+%% Features distribution
 % Boxplots of features distribution
+visualize_feature_distribution(features_set)
+
+%% Single trace features visualization 
 % feature position and value for a signal received as input from the user
-trace=get_trace(main_ambient,"MAP_A",8,1);
+
+% declaring trace
+map_type="MAP_A";
+sub_num=8;
+trace_num=1;
+% getting trace and its features
+trace=get_trace(main_ambient,map_type,sub_num,trace_num);
 new_feature_row=get_features(trace,main_ambient);
 
-visualise_trace_features(trace,new_feature_row,"PROVA",main_ambient)
+%visualisation
+main_title="Features examples for: subject "+num2str(sub_num)+", trace "+num2str(trace_num)+", "+get_class_name(map_type)+" class";
+visualise_trace_features(trace,new_feature_row,main_title,main_ambient)

@@ -8,8 +8,8 @@ function visualise_trace_features(rov_trace,trace_features_table,main_title,main
 %   3. App feature annotation with a vertical arrow and value display
 %   4. Correlation peak and signal for Template Matching 1 (TM1)
 %   5. Correlation peak and signal for Template Matching 2 (TM2)
-%   6. Short-Time Fourier Transform (STFT) power spectrum visualization 
-%      segmented by predefined frequency bands and time sectors with 
+%   6. Short-Time Fourier Transform (STFT) power spectrum visualization
+%      segmented by predefined frequency bands and time sectors with
 %      corresponding mean power annotations
 %
 % INPUTS:
@@ -61,16 +61,22 @@ palette = [
     1.00, 0.50, 0.00;
     1.00, 0.80, 0.00
     ];
+possible_legends_names=["Dominant", "Subdominant", "Minor"];
+legend_names=[];
 for i=1:2:size(peaks_values_pos,2)-1
-    color_idx = mod((i-1)/2, size(palette,1)) + 1;
-    plot(double(peaks_values_pos{:,i+1}),double(peaks_values_pos{:,i}),"Color",palette(color_idx,:),"Marker","o","LineWidth",2)
+    if ~isnan(double(peaks_values_pos{:,i}))
+        color_idx = mod((i-1)/2, size(palette,1)) + 1;
+        legend_names=[legend_names,possible_legends_names(color_idx)];
+        plot(double(peaks_values_pos{:,i+1}),double(peaks_values_pos{:,i}),"Color",palette(color_idx,:),"Marker","o","LineWidth",2)
+    end
+
 end
 
 title('Peaks by magnitude')
 ylim([min(rov_trace)-abs(0.05*min(rov_trace)),max(rov_trace)+0.05*max(rov_trace)])
 ylabel("rov trace [mv]")
 xlabel("time [s]")
-legend(["Dominant", "Subdominant", "Minor"],"Location","northeast","FontSize",8)
+legend(legend_names,"Location","northeast","FontSize",8)
 %% SP2: peaks by time occurance
 peaks_names=["First_peak","First_peak_time","Second_peak","Second_peak_time","Third_peak","Third_peak_time"];
 peaks_values_pos=trace_features_table(:,peaks_names);
@@ -89,16 +95,21 @@ palette = [
     0.00, 0.70, 0.20;
     0.35, 0.90, 0.40
     ];
+possible_legends_names=["First", "Second", "Third"];
+legend_names=[];
 for i=1:2:size(peaks_values_pos,2)-1
-    color_idx = mod((i-1)/2, size(palette,1)) + 1;
-    plot(double(peaks_values_pos{:,i+1}),double(peaks_values_pos{:,i}),"Color",palette(color_idx,:),"Marker","o","LineWidth",2)
+    if ~isnan(double(peaks_values_pos{:,i}))
+        color_idx = mod((i-1)/2, size(palette,1)) + 1;
+        legend_names=[legend_names,possible_legends_names(color_idx)];
+        plot(double(peaks_values_pos{:,i+1}),double(peaks_values_pos{:,i}),"Color",palette(color_idx,:),"Marker","o","LineWidth",2)
+    end
 end
 
 title('Peaks by temporal position')
 ylim([min(rov_trace)-abs(0.05*min(rov_trace)),max(rov_trace)+0.05*max(rov_trace)])
 ylabel("rov trace [mv]")
 xlabel("time [s]")
-legend(["First", "Second", "Third"],"Location","northeast","FontSize",8)
+legend(legend_names,"Location","northeast","FontSize",8)
 
 %% SP3: App
 subplot(2,3,3)
@@ -222,8 +233,8 @@ STFT_peaks_positions = sortrows(STFT_peaks_positions, 1, "descend", "MissingPlac
 
 % Feature names (must match table column names)
 avg_names = ["Dominant_AvgPowLF", "Dominant_AvgPowMF", "Dominant_AvgPowHF", ...
-             "Subdominant_AvgPowLF", "Subdominant_AvgPowMF", "Subdominant_AvgPowHF", ...
-             "Minor_AvgPowLF", "Minor_AvgPowMF", "Minor_AvgPowHF"];
+    "Subdominant_AvgPowLF", "Subdominant_AvgPowMF", "Subdominant_AvgPowHF", ...
+    "Minor_AvgPowLF", "Minor_AvgPowMF", "Minor_AvgPowHF"];
 
 % Extract feature values
 peaks_values_pos = trace_features_table(:, avg_names);
@@ -259,7 +270,7 @@ for s = 1:height(time_th)
 
         % Draw rectangle
         rectangle('Position', [t_start, f_start, t_end - t_start, f_end - f_start], ...
-                  'EdgeColor', 'k', 'LineStyle', '--', 'LineWidth', 1);
+            'EdgeColor', 'k', 'LineStyle', '--', 'LineWidth', 1);
 
         % Retrieve feature value (using pre-defined column names)
         idx = (s - 1) * 3 + b;
@@ -269,11 +280,11 @@ for s = 1:height(time_th)
                 t_mid = (t_start + t_end) / 2;
                 f_mid = (f_start + f_end) / 2;
                 text(t_mid, f_mid, sprintf('%.1e', value), ...
-                     'HorizontalAlignment', 'center', ...
-                     'VerticalAlignment', 'middle', ...
-                     'FontSize', 7, 'FontWeight', 'bold', ...
-                     'Color', 'k', 'BackgroundColor', 'w', ...
-                     'Margin', 0.5);
+                    'HorizontalAlignment', 'center', ...
+                    'VerticalAlignment', 'middle', ...
+                    'FontSize', 7, 'FontWeight', 'bold', ...
+                    'Color', 'k', 'BackgroundColor', 'w', ...
+                    'Margin', 0.5);
             end
         end
     end
